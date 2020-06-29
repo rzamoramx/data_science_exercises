@@ -6,8 +6,8 @@ Vector = List[float]
 
 
 def main():
-    comp_vectors()
     add_subs_vectors()
+    comp_vectors()
     compute_distance()
 
     plot_graphs()
@@ -37,6 +37,9 @@ def add_subs_vectors():
 
     vector_sums = add(vector_a, vector_b)
     vector_subs = subtract(vector_a, vector_b)
+
+    assert add(vector_a, vector_b) == [4, 4, 4]
+    assert subtract(vector_a, vector_b) == [-2, 0, 2]
 
     x_label = [1, 2, 3]
 
@@ -117,7 +120,7 @@ def scalar_multiply(scalar: float, v: Vector) -> Vector:
 
 
 def vector_sum(vectors: List[Vector]) -> Vector:
-    """Sums all corresponding elements"""
+    """ Sums all corresponding elements """
     assert vectors, "vectors not provided"
 
     # First element has the same size that the rest
@@ -129,14 +132,14 @@ def vector_sum(vectors: List[Vector]) -> Vector:
 
 
 def add(v: Vector, w: Vector) -> Vector:
-    """ Adds corresponding elements """
+    """ Adds corresponding elements on v and w one to one """
     assert len(v) == len(w), "Vectors must be the same length"
 
     return [v_i + w_i for v_i, w_i in zip(v, w)]
 
 
 def subtract(v: Vector, w: Vector) -> Vector:
-    """ Subtracts corresponding elements"""
+    """ Subtracts corresponding elements on v and w one to one """
     assert len(v) == len(w), "Vectors must be the same length"
 
     return [v_i - w_i for v_i, w_i in zip(v, w)]
