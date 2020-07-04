@@ -1,76 +1,8 @@
-from matplotlib import pyplot as plt
+""" Base functions for computations in above functions """
 from typing import List
 import math
 
 Vector = List[float]
-
-
-def main():
-    add_subs_vectors()
-    comp_vectors()
-    compute_distance()
-
-    plot_graphs()
-
-
-def plot_graphs():
-    plt.show()
-
-
-def comp_vectors():
-    assert vector_sum([[3, 2], [5, 6], [2, 1]]) == [10, 9]
-    assert scalar_multiply(2, [2, 4, 6]) == [4, 8, 12]
-
-    assert vector_mean([[2, 3], [4, 5], [6, 7]]) == [4, 5]
-    assert vector_mean([[2, 3, 4], [3, 4, 5], [4, 5, 6]]) == [3, 4, 5]
-
-    assert dot_product([1, 2, 3], [4, 5, 6]) == 32
-
-    assert sum_of_squares([1, 2, 3]) == 14  # 1*1 + 2*2 + 3*3
-
-    assert magnitude([3, 4]) == 5
-
-
-def add_subs_vectors():
-    vector_a = [1, 2, 3]
-    vector_b = [3, 2, 1]
-
-    vector_sums = add(vector_a, vector_b)
-    vector_subs = subtract(vector_a, vector_b)
-
-    assert add(vector_a, vector_b) == [4, 4, 4]
-    assert subtract(vector_a, vector_b) == [-2, 0, 2]
-
-    x_label = [1, 2, 3]
-
-    plt.figure()
-    plt.plot(x_label, vector_a, color='blue', marker='o', linestyle='solid')
-    plt.plot(x_label, vector_b, color='green', marker='o', linestyle='solid')
-    plt.plot(x_label, vector_sums, color='red', marker='o', linestyle='solid')
-    plt.plot(x_label, vector_subs, color='black', marker='o', linestyle='dotted')
-    plt.title("Vectors")
-
-    print(vector_a)
-    print(vector_b)
-    print(vector_sum)
-    print(vector_subs)
-
-
-def compute_distance():
-    vector_1 = [2, 3]
-    vector_2 = [4, 5]
-    dist = distance(vector_1, vector_2)
-    print(f'distance of {vector_1} and {vector_2} is: {dist}')
-
-    xs, ys = [pair for pair in zip(vector_1, vector_2)]
-    print(xs)
-    print(ys)
-
-    plt.figure()
-    plt.scatter(xs, ys)
-
-
-# Base functions for computations in above functions
 
 
 def distance(v: Vector, w: Vector) -> float:
@@ -143,7 +75,3 @@ def subtract(v: Vector, w: Vector) -> Vector:
     assert len(v) == len(w), "Vectors must be the same length"
 
     return [v_i - w_i for v_i, w_i in zip(v, w)]
-
-
-if __name__ == "__main__":
-    main()
