@@ -7,6 +7,8 @@ __pycache__/
 *.so
 
 .idea/
+.idea/sonarlint
+.idea/sonarlint/issuestore
 
 # Distribution / packaging
 .Python
