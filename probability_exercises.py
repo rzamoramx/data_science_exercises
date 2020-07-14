@@ -1,5 +1,7 @@
 """ Exercises about probability """
-import enum, random
+import random
+from probability.conditional import random_kid
+from probability.kid_enum import Kid
 
 
 def main():
@@ -26,15 +28,6 @@ def kids():
 
     print(f'P(both | older): {both_girls/older_girl}')
     print(f'P(both | either): {both_girls / either_girl}')
-
-
-class Kid(enum.Enum):
-    BOY = 0
-    GIRL = 1
-
-
-def random_kid() -> Kid:
-    return random.choice([Kid.BOY, Kid.GIRL])
 
 
 if __name__ == '__main__':

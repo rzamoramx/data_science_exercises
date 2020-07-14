@@ -14,7 +14,7 @@ def main():
 
     learning_rate = 0.1
 
-    desired_target_test = 9  # the position on the test file
+    desired_target_test = 9  # specific position on the test file
 
     epochs = 5
 
