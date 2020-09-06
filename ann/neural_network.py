@@ -67,9 +67,9 @@ class NeuralNetwork:
 
     def backquery(self, targets_list: list) -> numpy.ndarray:
         """
-        Make a reverse query to get a view of mind's ann
+        Make an backward query and get a snapshot of Ann's mind
         :param targets_list:
-        :return: array representing an image of mind's ann
+        :return: array representing an image of Ann's mind
         """
         # transpose the targets list to a vertical array
         final_outputs = numpy.array(targets_list, ndmin=2).T

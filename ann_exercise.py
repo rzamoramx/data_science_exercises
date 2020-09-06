@@ -42,7 +42,7 @@ def operates_ann(ann: NeuralNetwork, output_nodes: int, epochs: int, my_handwrit
     :param epochs: number of epochs
     :param my_handwritten: if we wants to operate with own handwritten numbers
     :param large_set: if we wants to train and test the ANN with large set of training data located in resources
-    :param label_backquery: -1 if we don't want a backquery, 0 to 9 (numbers) for backquery to ANN
+    :param label_backquery: -1 if we don't want a backward query, 0 to 9 (numbers) for backward query to ANN
     :return: nothing
     """
     # START TRAINING
@@ -117,7 +117,6 @@ def operates_ann(ann: NeuralNetwork, output_nodes: int, epochs: int, my_handwrit
         # plot image data
         plt.figure()
         plt.imshow(image_data.reshape(28,28), cmap='Greys', interpolation='None')
-        #matplotlib.pyplot.imshow(image_data.reshape(28,28), cmap='Greys', interpolation='None')
 
 
 def view_my_own_handwritten_number(my_number: str):
