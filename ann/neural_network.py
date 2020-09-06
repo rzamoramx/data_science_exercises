@@ -22,6 +22,7 @@ class NeuralNetwork:
 
         # this is the sigmoid function activation
         self.activation_function = lambda x: scipy.special.expit(x)
+        self.inverse_activation_function = lambda x: scipy.special.logit(x)
 
     def train(self, inputs_list, targets_list):
         # converts inputs list to 2d array
@@ -63,3 +64,37 @@ class NeuralNetwork:
         final_inputs = numpy.dot(self.who, hidden_outputs)
         # calculate the signal emerging from final output layer
         return self.activation_function(final_inputs)
+
+    def backquery(self, targets_list: list) -> numpy.ndarray:
+        """
+        Make a reverse query to get a view of mind's ann
+        :param targets_list:
+        :return: array representing an image of mind's ann
+        """
+        # transpose the targets list to a vertical array
+        final_outputs = numpy.array(targets_list, ndmin=2).T
+
+        # calculate the signal into the final output layer
+        final_inputs = self.inverse_activation_function(final_outputs)
+
+        # calculate the signal out of the hidden layer
+        hidden_outputs = numpy.dot(self.who.T, final_inputs)
+        # scale them back to 0.01 to .99
+        hidden_outputs -= numpy.min(hidden_outputs)
+        hidden_outputs /= numpy.max(hidden_outputs)
+        hidden_outputs *= 0.98
+        hidden_outputs += 0.01
+
+        # calculate the signal into the hidden layer
+        hidden_inputs = self.inverse_activation_function(hidden_outputs)
+
+        # calculate the signal out of the input layer
+        inputs = numpy.dot(self.wih.T, hidden_inputs)
+        # scale them back to 0.01 to .99
+        inputs -= numpy.min(inputs)
+        inputs /= numpy.max(inputs)
+        inputs *= 0.98
+        inputs += 0.01
+
+        return inputs
+

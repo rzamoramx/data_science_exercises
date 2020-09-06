@@ -11,8 +11,7 @@ def main():
     #view_example_of_training_data()
     #desired_target_test = 9  # specific position on the test file
     #view_example_of_test_data(desired_target_test)
-
-    view_my_own_handwritten_number("nueve")
+    #view_my_own_handwritten_number("nueve")
 
     # ANN Operating
 
@@ -30,14 +29,24 @@ def main():
     # Init ANN
     ann = NeuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate)
 
-    operates_ann(ann, output_nodes, epochs, True)
+    operates_ann(ann, output_nodes, epochs, False, True, 1)
 
     plt.show()  # for show the plotted images
 
 
-def operates_ann(ann: NeuralNetwork, output_nodes: int, epochs: int, my_handwritten=False):
+def operates_ann(ann: NeuralNetwork, output_nodes: int, epochs: int, my_handwritten=False, large_set=False, label_backquery=-1):
+    """
+    Operates de ANN
+    :param ann: instance of ANN
+    :param output_nodes: number of nodes for ANN
+    :param epochs: number of epochs
+    :param my_handwritten: if we wants to operate with own handwritten numbers
+    :param large_set: if we wants to train and test the ANN with large set of training data located in resources
+    :param label_backquery: -1 if we don't want a backquery, 0 to 9 (numbers) for backquery to ANN
+    :return: nothing
+    """
     # START TRAINING
-    training_list = get_training()
+    training_list = get_training(large_set)
 
     score_card = []
 
@@ -55,7 +64,7 @@ def operates_ann(ann: NeuralNetwork, output_nodes: int, epochs: int, my_handwrit
             ann.train(inputs, targets)
 
     # START TESTING
-    test_list = get_test(my_handwritten)
+    test_list = get_test(my_handwritten, large_set)
 
     # test all
     for record in test_list:
@@ -71,7 +80,8 @@ def operates_ann(ann: NeuralNetwork, output_nodes: int, epochs: int, my_handwrit
         # scale and shift the inputs
         str_to_int = numpy.asfarray(all_values[1:])  # converts strings into number
         scaled_test = (str_to_int / 255.0 * 0.99) + 0.01
-        # make query
+
+        # Query
         outputs = ann.query(scaled_test)
         # the highest value is the answer of the ann
         label = numpy.argmax(outputs)
@@ -82,6 +92,7 @@ def operates_ann(ann: NeuralNetwork, output_nodes: int, epochs: int, my_handwrit
         else:
             score_card.append(0)
 
+    # Calculate the performance score
     print(score_card)
     score_a = numpy.asarray(score_card)
     print(f'performance percentage of accuracy {score_a.sum()/score_a.size}')
@@ -92,8 +103,29 @@ def operates_ann(ann: NeuralNetwork, output_nodes: int, epochs: int, my_handwrit
     #targets = numpy.zeros(onodes) + 0.01
     #targets[int(all_values[0])] = 0.99  # targets are correct answers so is equal to one, but can't use that number
 
+    # Backquery
+    if label_backquery > -1:
+        # create the output signals for this label
+        targets = numpy.zeros(output_nodes) + 0.01
+        # all_values[0] is the target label for this record
+        targets[label_backquery] = 0.99
+        print(targets)
+
+        # get image data
+        image_data = ann.backquery(targets)
+
+        # plot image data
+        plt.figure()
+        plt.imshow(image_data.reshape(28,28), cmap='Greys', interpolation='None')
+        #matplotlib.pyplot.imshow(image_data.reshape(28,28), cmap='Greys', interpolation='None')
+
 
 def view_my_own_handwritten_number(my_number: str):
+    """
+    Only for check own handwritten images located in resources/my_handwritten
+    :param my_number: number to show
+    :return:
+    """
     img = io.imread("resources/my_handwritten/"+my_number+".png", as_gray=True)
     img_data = transform.resize(img, (28,28), mode='symmetric', preserve_range=True)
 
