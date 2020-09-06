@@ -2,9 +2,20 @@
 import numpy
 from ann.neural_network import NeuralNetwork
 import matplotlib.pyplot as plt
+from skimage import transform, io
 
 
 def main():
+    # Sampling inputs and outputs
+
+    #view_example_of_training_data()
+    #desired_target_test = 9  # specific position on the test file
+    #view_example_of_test_data(desired_target_test)
+
+    view_my_own_handwritten_number("nueve")
+
+    # ANN Operating
+
     # the matrix of the number image (hand written) in this case 28x28 = 784
     input_nodes = 784
     # the same length of training data set
@@ -14,21 +25,17 @@ def main():
 
     learning_rate = 0.1
 
-    desired_target_test = 9  # specific position on the test file
-
     epochs = 5
 
     # Init ANN
     ann = NeuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate)
 
-    #view_example_of_training_data()
-    #view_example_of_test_data(desired_target_test)
-    operates_ann(ann, output_nodes, epochs)
+    operates_ann(ann, output_nodes, epochs, True)
 
     plt.show()  # for show the plotted images
 
 
-def operates_ann(ann: NeuralNetwork, output_nodes: int, epochs: int):
+def operates_ann(ann: NeuralNetwork, output_nodes: int, epochs: int, my_handwritten=False):
     # START TRAINING
     training_list = get_training()
 
@@ -48,15 +55,19 @@ def operates_ann(ann: NeuralNetwork, output_nodes: int, epochs: int):
             ann.train(inputs, targets)
 
     # START TESTING
-    test_list = get_test()
+    test_list = get_test(my_handwritten)
 
     # test all
     for record in test_list:
-        # split the element of the list
-        all_values = record.split(',')
+        if my_handwritten is True:
+            all_values = record
+        else:
+            # split the element of the list
+            all_values = record.split(',')
+
         # correct answer
         correct_label = int(all_values[0])
-        print(f'correct label {correct_label}')
+        print(f'correct label {repr(correct_label)}')
         # scale and shift the inputs
         str_to_int = numpy.asfarray(all_values[1:])  # converts strings into number
         scaled_test = (str_to_int / 255.0 * 0.99) + 0.01
@@ -80,6 +91,18 @@ def operates_ann(ann: NeuralNetwork, output_nodes: int, epochs: int):
     #onodes = 10
     #targets = numpy.zeros(onodes) + 0.01
     #targets[int(all_values[0])] = 0.99  # targets are correct answers so is equal to one, but can't use that number
+
+
+def view_my_own_handwritten_number(my_number: str):
+    img = io.imread("resources/my_handwritten/"+my_number+".png", as_gray=True)
+    img_data = transform.resize(img, (28,28), mode='symmetric', preserve_range=True)
+
+    img_data = (img_data / 255.0 * 0.99) + 0.01  # re-escala la data a valores decimales de entre 0.01 y 1.0
+
+    print(img_data)
+
+    plt.figure()
+    plt.imshow(img_data, cmap='Greys', interpolation='None')
 
 
 def view_example_of_test_data(desired_target_test: int):
@@ -113,23 +136,42 @@ def view_example_of_training_data():
     print(scaled_input)
 
 
-def get_training() -> list:
-    #training_file = open("resources/mnist_train_100.csv", 'r')
-    training_file = open("resources/mnist_train.csv", 'r')
+def get_training(large_set=True) -> list:
+    if large_set:
+        training_file = open("resources/mnist_train.csv", 'r')
+    else:
+        training_file = open("resources/mnist_train_100.csv", 'r')
     training_list = training_file.readlines()
     training_file.close()
     return training_list
 
 
-def get_test() -> list:
-    #test_file = open("resources/mnist_test_10.csv", 'r')
-    test_file = open("resources/mnist_test.csv", 'r')
+def get_test(my_own_handwritten=False, large_set=True) -> list:
+    if my_own_handwritten:
+        return get_my_handwritten()
+
+    if large_set:
+        test_file = open("resources/mnist_test.csv", 'r')
+    else:
+        test_file = open("resources/mnist_test_10.csv", 'r')
     test_list = test_file.readlines()
     test_file.close()
     return test_list
 
 
+def get_my_handwritten() -> list:
+    what_numbers = {"uno": 1, "dos": 2, "tres": 3, "cuatro": 4, "cinco": 5, "seis": 6, "ocho": 8, "nueve": 9}
+    list_data = []
+    for key in what_numbers:
+        img = io.imread("resources/my_handwritten/"+key+".png", as_gray=True)
+        img_data = transform.resize(img, (28,28), mode='symmetric', preserve_range=True)
+
+        img_data = (img_data / 255.0 * 0.99) + 0.01  # re-escala la data a valores decimales de entre 0.01 y 1.0
+        img_data = numpy.insert(img_data, 0, what_numbers[key])
+        #img_data.insert(0, what_numbers[key])
+        list_data.append(img_data)
+    return list_data
+
+
 if __name__ == '__main__':
     main()
-
-
